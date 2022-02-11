@@ -31,27 +31,11 @@ defmodule ExmealWeb.Telemetry do
       ),
 
       # Database Metrics
-      summary("exmeal.repo.query.total_time",
-        unit: {:native, :millisecond},
-        description: "The sum of the other measurements"
-      ),
-      summary("exmeal.repo.query.decode_time",
-        unit: {:native, :millisecond},
-        description: "The time spent decoding the data received from the database"
-      ),
-      summary("exmeal.repo.query.query_time",
-        unit: {:native, :millisecond},
-        description: "The time spent executing the query"
-      ),
-      summary("exmeal.repo.query.queue_time",
-        unit: {:native, :millisecond},
-        description: "The time spent waiting for a database connection"
-      ),
-      summary("exmeal.repo.query.idle_time",
-        unit: {:native, :millisecond},
-        description:
-          "The time the connection spent waiting before being checked out for the query"
-      ),
+      summary("exmeal.repo.query.total_time", unit: {:native, :millisecond}),
+      summary("exmeal.repo.query.decode_time", unit: {:native, :millisecond}),
+      summary("exmeal.repo.query.query_time", unit: {:native, :millisecond}),
+      summary("exmeal.repo.query.queue_time", unit: {:native, :millisecond}),
+      summary("exmeal.repo.query.idle_time", unit: {:native, :millisecond}),
 
       # VM Metrics
       summary("vm.memory.total", unit: {:byte, :kilobyte}),
