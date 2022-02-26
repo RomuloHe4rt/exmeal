@@ -1,34 +1,40 @@
 defmodule Exmeal.Meals.CreateTest do
-  use Exmeal.DataCase
+  use DailyMeals.DataCase, async: true
 
-  import Exmeal.Factory
+  import DailyMeals.Factory
 
-  alias Exmeal.{Error, Meal}
+  alias DailyMeals.{Error, Meal}
+  alias DailyMeals.Meals.Create
 
-  describe "Create Meal" do
+  describe "call/1" do
     test "when all params are valid, returns the meal" do
-      params = build(:meal_params)
+      user_id = "d3269a1f-c362-4396-866b-7373abadea38"
 
-      response = Exmeal.create_meal(params)
+      insert(:user, id: user_id)
+
+      params = build(:meal_params, user_id: user_id)
+
+      response = Create.call(params)
 
       assert {:ok,
               %Meal{
-                calorias: 20,
-                data: ~N[2001-05-02 00:00:00],
-                descricao: "Banana",
-                id: _id
+                id: _id,
+                descricao: "Avocado",
+                calorias: 300,
+                data: ~U[2021-03-28 13:59:13Z],
+                user_id: _user_id
               }} = response
     end
 
-    test "when there are invalid params, returns an error" do
-      params = %{
-        calorias: 20,
-        data: ~N[2001-05-02 00:00:00]
-      }
+    test "when all invalid params, returns an error" do
+      params = build(:meal_params, %{descricao: "", calorias: nil})
 
-      response = Exmeal.create_meal(params)
+      response = Create.call(params)
 
-      assert {:error, %Error{}} = response
+      expected_response = %{calorias: ["can't be blank"], descricao: ["can't be blank"]}
+
+      assert {:error, %Error{message: changeset, status: :bad_request}} = response
+      assert expected_response == errors_on(changeset)
     end
   end
 end

@@ -1,40 +1,47 @@
 defmodule Exmeal.Meals.DeleteTest do
-  use Exmeal.DataCase
+  use Exmeal.DataCase, async: true
 
   import Exmeal.Factory
 
-  alias Exmeal.Meal
-  alias Exmeal.Error
-  alias Exmeal.Meals.{Create, Delete}
+  alias Exmeal.{Error, Meal}
+  alias Exmeal.Meals.Delete
 
-  describe "Delete Meal" do
-    setup do
-      params = build(:meal_params)
+  describe "call/1" do
+    test "when meal exists, deletes the meal" do
+      meal_id = "47d5430a-9569-40d7-9a33-222aaedb8e29"
+      user_id = "e89614f0-dd7c-4a9e-b474-c83ec212a5bc"
 
-      {:ok, %Meal{id: id}} = Create.call(params)
+      insert(:user, id: user_id)
+      insert(:meal, id: meal_id, user_id: user_id)
 
-      {:ok, id: id}
+      response =
+        meal_id
+        |> Delete.call()
+
+      assert {
+               :ok,
+               %Meal{
+                 id: _id,
+                 descricao: "Avocado",
+                 data: ~U[2021-03-28 13:59:13Z],
+                 calorias: 300,
+                 user_id: _user_id
+               }
+             } = response
     end
 
-    test "when a valid id is given, returns the meal", %{id: id} do
-      response = Delete.call(id)
+    test "when meal not exists, ruturns an error" do
+      meal_id = "47d5430a-9569-40d7-9a33-222aaedb8e29"
 
-      assert {:ok,
-              %Exmeal.Meal{
-                calorias: 20,
-                data: ~N[2001-05-02 00:00:00],
-                descricao: "Banana",
-                id: _id,
-                inserted_at: _inserted_at,
-                updated_at: _updated_at
-              }} = response
-    end
+      response = Delete.call(meal_id)
 
-    test "when an invalid id is given, returns an error" do
-      id = "a6ef9b39-d638-4835-9ad7-dbe48d1257eb"
-      response = Delete.call(id)
-
-      assert {:error, %Error{result: "Meal not found!", status: :not_found}} = response
+      assert {
+               :error,
+               %Error{
+                 message: "Meal not found",
+                 status: :not_found
+               }
+             } == response
     end
   end
 end

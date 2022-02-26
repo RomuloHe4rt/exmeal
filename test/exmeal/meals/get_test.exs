@@ -4,30 +4,40 @@ defmodule Exmeal.Meals.GetTest do
   import Exmeal.Factory
 
   alias Exmeal.{Error, Meal}
+  alias Exmeal.Meals.Get
 
-  describe "Get Meal" do
-    test "when the meal exists, returns the meal" do
-      params = build(:meal_params)
-      {:ok, %Meal{id: id}} = Exmeal.create_meal(params)
+  describe "by_id/1" do
+    test "when meal exists, returns the meal" do
+      insert(:user)
+      insert(:meal)
 
-      response = Exmeal.get_meal_by_id(id)
+      response =
+        "47d5430a-9569-40d7-9a33-222aaedb8e29"
+        |> Get.by_id()
 
-      assert {:ok,
-              %Meal{
-                calorias: _cal,
-                data: _date,
-                descricao: "Banana",
-                id: _id,
-                inserted_at: _inserted_at,
-                updated_at: _updated_at
-              }} = response
+      assert {
+               :ok,
+               %Meal{
+                 id: _id,
+                 descricao: "Avocado",
+                 calorias: 300,
+                 data: ~U[2021-03-28 13:59:13Z]
+               }
+             } = response
     end
 
-    test "when an invalid id is given, returns an error" do
-      id = "a6ef9b39-d638-4835-9ad7-dbe48d1257eb"
-      response = Exmeal.get_meal_by_id(id)
+    test "when the meal not exits, returns an error" do
+      meal_id = "47d5430a-9569-40d7-9a33-222aaedb8e29"
 
-      assert {:error, %Error{result: "Meal not found!", status: :not_found}} = response
+      response = Get.by_id(meal_id)
+
+      assert {
+               :error,
+               %Error{
+                 message: "Meal not found",
+                 status: :not_found
+               }
+             } = response
     end
   end
 end

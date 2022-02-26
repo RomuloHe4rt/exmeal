@@ -16,8 +16,7 @@ defmodule Exmeal.MixProject do
         coveralls: :test,
         "coveralls.detail": :test,
         "coveralls.post": :test,
-        "coveralls.html": :test,
-        "coveralls.json": :test
+        "coveralls.html": :test
       ]
     ]
   end
@@ -53,8 +52,7 @@ defmodule Exmeal.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.10", only: :test},
-      {:ex_machina, "~> 2.7.0"},
-      {:json_response, git: "https://github.com/joaopealves/json_response"}
+      {:ex_machina, "~> 2.7.0"}
     ]
   end
 

@@ -1,22 +1,50 @@
 defmodule Exmeal.Factory do
   use ExMachina.Ecto, repo: Exmeal.Repo
 
-  alias Exmeal.Meal
+  alias Exmeal.{Meal, User}
 
   def meal_params_factory do
     %{
-      calorias: 20,
-      data: ~N[2001-05-02 00:00:00],
-      descricao: "Banana"
+      descricao: "Avocado",
+      calorias: 300,
+      data: "2021-03-28T13:59:13Z",
+      user_id: "c08e7938-553b-4c07-ab32-69dbcf932bde"
+    }
+  end
+
+  def meal_web_params_factory do
+    %{
+      "descricao" => "Avocado",
+      "calorias" => 300,
+      "data" => "2021-03-28T13:59:13Z",
+      "user_id" => "c08e7938-553b-4c07-ab32-69dbcf932bde"
     }
   end
 
   def meal_factory do
     %Meal{
-      id: "5a99cd33-a5cc-44ca-91aa-1c1a43d00276",
-      calorias: 20,
-      data: ~N[2001-05-02 00:00:00],
-      descricao: "Banana"
+      id: "47d5430a-9569-40d7-9a33-222aaedb8e29",
+      descricao: "Avocado",
+      calorias: 300,
+      data: ~U[2021-03-28 13:59:13Z],
+      user_id: "c08e7938-553b-4c07-ab32-69dbcf932bde"
+    }
+  end
+
+  def user_params_factory do
+    %{
+      nome: "Rômulo",
+      cpf: "12345678910",
+      email: "romulo@email.com"
+    }
+  end
+
+  def user_factory do
+    %User{
+      id: "c08e7938-553b-4c07-ab32-69dbcf932bde",
+      nome: "Rômulo",
+      cpf: "12345678910",
+      email: "romulo@email.com"
     }
   end
 end

@@ -1,32 +1,51 @@
 defmodule Exmeal.Meals.UpdateTest do
-  use Exmeal.DataCase
+  use Exmeal.DataCase, async: true
 
-  describe "Update Meal" do
-    test "when a valid id is given, returns the meal" do
+  import Exmeal.Factory
+
+  alias Exmeal.{Error, Meal}
+  alias Exmeal.Meals.Update
+
+  describe "call/1" do
+    test "when meal exists, updates the meal" do
+      insert(:user)
+      insert(:meal)
+
       params = %{
-        calorias: 20,
-        data: ~N[2001-05-02 00:00:00],
-        descricao: "Banana"
+        "id" => "47d5430a-9569-40d7-9a33-222aaedb8e29",
+        "descricao" => "Abacate"
       }
 
-      {_ok, meal} = Exmeal.create_meal(params)
+      response =
+        params
+        |> Update.call()
 
-      response = Exmeal.update_meal(%{"id" => meal.id, "calorias" => 25})
-
-      assert {:ok,
-              %Exmeal.Meal{
-                calorias: 25,
-                data: ~N[2001-05-02 00:00:00],
-                descricao: "Banana",
-                id: _id
-              }} = response
+      assert {
+               :ok,
+               %Meal{
+                 id: _id,
+                 descricao: "Abacate",
+                 calorias: 300,
+                 data: ~U[2021-03-28 13:59:13Z]
+               }
+             } = response
     end
 
-    test "when an invalid id is given, returns an error" do
-      id = "a6ef9b39-d638-4835-9ad7-dbe48d1257eb"
-      response = Exmeal.update_meal(%{"id" => id})
+    test "when meal not exists, returns an error" do
+      params = %{
+        "id" => "47d5430a-9569-40d7-9a33-222aaedb8e29",
+        "descricao" => "Abacate"
+      }
 
-      assert {:error, %Exmeal.Error{result: "Meal not found!", status: :not_found}} = response
+      response = Update.call(params)
+
+      assert {
+               :error,
+               %Error{
+                 message: "Meal not found",
+                 status: :not_found
+               }
+             } = response
     end
   end
 end
